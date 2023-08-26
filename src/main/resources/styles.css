@@ -1,0 +1,14 @@
+.root {
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+.custom-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.description-label {
+    -fx-font-size: 14;
+    -fx-text-fill: #333;
+}
