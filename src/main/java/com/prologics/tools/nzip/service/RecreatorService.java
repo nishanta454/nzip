@@ -42,7 +42,7 @@ public class RecreatorService {
 
     private void createFile(File outputDirectory, String filePath, String content) {
         try {
-            File recreatedFile = new File(outputDirectory, filePath);
+        	File recreatedFile = new File(outputDirectory, filePath.replace("/", File.separator));
             recreatedFile.getParentFile().mkdirs();
             try (FileWriter writer = new FileWriter(recreatedFile)) {
                 writer.write(new String(Base64.getDecoder().decode(content)));
