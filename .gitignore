@@ -27,3 +27,4 @@ target/
 .vscode/
 /.metadata/
 config/tmp_aws
+bin/

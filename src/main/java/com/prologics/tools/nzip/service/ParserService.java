@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Base64;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.prologics.tools.nzip.util.EncDecUtil;
 import com.prologics.tools.nzip.util.GitIgnoreUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class ParserService {
 			JSONArray filesArray = new JSONArray();
 
 			String projectName = projectDirectory.getName();
-			projectJson.put("pname", projectName);
+			projectJson.put("pname", EncDecUtil.encrypt(projectName));
 
 			parseDirectory(projectDirectory, projectDirectory, filesArray);
 
@@ -37,7 +38,7 @@ public class ParserService {
 		}
 	}
 
-	private static void parseDirectory(File rootDirectory, File currentDirectory, JSONArray filesArray) {
+	private static void parseDirectory(File rootDirectory, File currentDirectory, JSONArray filesArray) throws JSONException, Exception {
 		if (DIRECTORIES_TO_EXCLUDE.contains(currentDirectory.getName())) {
 			return; // Skip parsing .git folder
 		}
@@ -53,7 +54,7 @@ public class ParserService {
 					// Check .gitignore rules
 					if (!shouldIgnore(relativePath, rootDirectory)) {
 						JSONObject fileObject = new JSONObject();
-						fileObject.put("path", relativePath);
+						fileObject.put("path", EncDecUtil.encrypt(relativePath));
 						fileObject.put("content", readFileContent(file));
 						filesArray.put(fileObject);
 					}
@@ -62,10 +63,10 @@ public class ParserService {
 		}
 	}
 
-	private static String readFileContent(File file) {
+	private static String readFileContent(File file) throws Exception {
 		String fileContent = null;
 		try {
-			return Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+			return EncDecUtil.encrypt(new String(Files.readAllBytes(file.toPath())));
 		} catch (IOException e) {
 			log.error("exception while reading file");
 		}
